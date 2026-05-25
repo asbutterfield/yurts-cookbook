@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Yuri's Cookbook 📖</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Pacifico&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{min-height:100vh;background:linear-gradient(160deg,#fff0fa 0%,#f0f4ff 40%,#f0fff8 100%);font-family:'Nunito',sans-serif;color:#3d2c4e;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pop{0%{transform:scale(.8);opacity:0}80%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.floating{animation:float 3s ease-in-out infinite;}
+.pop-in{animation:pop 0.4s cubic-bezier(.34,1.56,.64,1) forwards;}
+.recipe-card{transition:all 0.25s cubic-bezier(.34,1.56,.64,1);cursor:pointer;}
+.recipe-card:hover{transform:translateY(-6px) rotate(-1deg) scale(1.02);box-shadow:0 16px 40px rgba(0,0,0,0.15)!important;}
+.cat-chip,.btn-bounce{transition:all 0.2s cubic-bezier(.34,1.56,.64,1);cursor:pointer;}
+.cat-chip:hover{transform:scale(1.08);}
+.btn-bounce:hover{transform:scale(1.05);}
+input:focus,textarea:focus,select:focus{outline:none;border-color:#ff85b3!important;box-shadow:0 0 0 3px rgba(255,133,179,0.2);}
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-track{background:#fff0fa;border-radius:10px;}
+::-webkit-scrollbar-thumb{background:#ffb3d1;border-radius:10px;}
+.header{background:linear-gradient(135deg,#ff6eb4 0%,#ff9a5c 35%,#ffdd57 65%,#7ed321 85%,#4fc3f7 100%);padding:32px 20px 28px;text-align:center;position:relative;overflow:hidden;border-radius:0 0 40px 40px;box-shadow:0 8px 32px rgba(255,110,180,0.3);}
+.header-title{font-family:'Pacifico',cursive;font-size:32px;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,0.2);margin-bottom:6px;}
+.header-sub{color:rgba(255,255,255,0.9);font-size:14px;font-weight:700;}
+.nav{display:flex;gap:10px;justify-content:center;margin-top:18px;}
+.nav-btn{border:none;border-radius:30px;padding:9px 22px;font-size:14px;font-family:'Nunito',sans-serif;cursor:pointer;font-weight:800;}
+.nav-btn.active{background:#fff;color:#ff6eb4;box-shadow:0 4px 16px rgba(255,110,180,0.3);}
+.nav-btn.inactive{background:rgba(255,255,255,0.25);color:#fff;}
+.body{max-width:800px;margin:0 auto;padding:24px 16px 100px;}
+.search-bar{width:100%;border:2.5px solid #ffd6ec;border-radius:30px;padding:12px 20px;font-size:15px;font-family:'Nunito',sans-serif;background:#fff;color:#3d2c4e;margin-bottom:20px;box-shadow:0 4px 16px rgba(255,110,180,0.1);font-weight:600;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:30px;border:2px solid #ffd6ec;background:#fff;color:#9b7eb8;font-size:12px;font-family:'Nunito',sans-serif;font-weight:800;}
+.chip.active{background:#ff85b3;border-color:#ff85b3;color:#fff;}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
+.card{background:#fff;border-radius:24px;box-shadow:0 4px 20px rgba(0,0,0,0.08);overflow:hidden;}
+.card-top{padding:24px 18px 16px;}
+.card-emoji{font-size:44px;margin-bottom:8px;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.15));}
+.card-title{font-size:16px;font-weight:800;color:#fff;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,0.2);}
+.card-time{color:rgba(255,255,255,0.85);font-size:12px;margin-top:4px;font-weight:700;}
+.card-meta{padding:10px 14px 12px;}
+.card-author{font-size:12px;color:#9b7eb8;font-weight:700;}
+.card-cat{font-size:11px;color:#ff85b3;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+.form-box{background:#fff;border-radius:28px;padding:24px;border:2px solid #ffd6ec;box-shadow:0 8px 32px rgba(255,110,180,0.12);}
+.form-label{display:block;font-size:12px;color:#9b7eb8;font-weight:800;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px;}
+.form-input{width:100%;border:2px solid #ffd6ec;border-radius:14px;padding:10px 14px;font-size:15px;font-family:'Nunito',sans-serif;background:#fff;color:#3d2c4e;font-weight:600;}
+.form-input.error{border-color:#ff6b6b;}
+.form-textarea{width:100%;border:2px solid #ffd6ec;border-radius:14px;padding:10px 14px;font-size:14px;font-family:'Nunito',sans-serif;background:#fff;color:#3d2c4e;min-height:100px;line-height:1.6;resize:vertical;font-weight:600;}
+.form-textarea.error{border-color:#ff6b6b;}
+.err-msg{color:#ff6b6b;font-size:12px;margin-top:4px;font-weight:700;}
+.primary-btn{background:linear-gradient(135deg,#ff6eb4,#ff9a5c);color:#fff;border:none;border-radius:30px;padding:13px 28px;font-size:16px;font-family:'Nunito',sans-serif;cursor:pointer;font-weight:800;width:100%;box-shadow:0 4px 20px rgba(255,110,180,0.4);}
+.back-btn{background:none;border:none;color:#ff85b3;font-size:14px;cursor:pointer;font-family:'Nunito',sans-serif;padding:4px 0;display:inline-flex;align-items:center;gap:4px;font-weight:800;}
+.mode-btn{flex:1;padding:12px 8px;border-radius:16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;cursor:pointer;}
+.mode-btn.active{border:2.5px solid #ff6eb4;background:linear-gradient(135deg,#fff0f6,#ffe8f8);color:#ff6eb4;}
+.mode-btn.inactive{border:2.5px solid #ffd6ec;background:#fff;color:#bbb;}
+.img-drop{background:linear-gradient(135deg,#fff0f6,#f0f4ff);border-radius:20px;padding:20px;border:2.5px dashed #ffa8d0;text-align:center;margin-bottom:12px;}
+.badge{border-radius:20px;padding:8px 16px;font-size:13px;font-weight:800;border:2px solid;}
+.detail-section{background:#fff;border-radius:24px;padding:20px;margin-bottom:14px;}
+.ing-row{display:flex;gap:10px;padding:6px 0;border-bottom:1.5px dashed #fff0f6;font-size:15px;font-weight:600;}
+.note-box{background:linear-gradient(135deg,#fffde7,#fff8e1);border-radius:24px;padding:20px;margin-bottom:20px;border:2.5px dashed #ffd54f;}
+.cta-banner{margin-top:48px;background:linear-gradient(135deg,#ff9a9e 0%,#fad0c4 40%,#ffecd2 70%,#a1c4fd 100%);border-radius:28px;padding:28px;text-align:center;box-shadow:0 8px 32px rgba(255,154,158,0.3);}
+.empty-state{text-align:center;padding:60px 20px;}
+.success-banner{background:linear-gradient(135deg,#d4fc79,#96e6a1);border-radius:16px;padding:18px;text-align:center;margin-bottom:20px;font-size:17px;font-weight:800;color:#2d6a4f;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+#wakelock-badge{position:fixed;bottom:16px;right:16px;background:rgba(255,110,180,0.9);color:#fff;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:800;font-family:'Nunito',sans-serif;display:none;z-index:999;box-shadow:0 2px 12px rgba(255,110,180,0.4);}
+@media(max-width:480px){.grid-3{grid-template-columns:1fr;}.card-grid{grid-template-columns:1fr 1fr;}.header-title{font-size:26px;}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="wakelock-badge">📱 Screen staying awake</div>
+<script>
+const BOOK_NAME="Yuri's Cookbook";
+const CATEGORIES=["Breakfast","Lunch","Dinner","Dessert","Snacks","Drinks","Soups","Baking","Holiday"];
+const CAT_EMOJI={Breakfast:"🍳",Lunch:"🥗",Dinner:"🍽️",Dessert:"🍰",Snacks:"🧁",Drinks:"🥤",Soups:"🍲",Baking:"🥖",Holiday:"🎄"};
+const GRADIENTS=[
+  "linear-gradient(135deg,#ff9a9e,#fad0c4)",
+  "linear-gradient(135deg,#a18cd1,#fbc2eb)",
+  "linear-gradient(135deg,#ffecd2,#fcb69f)",
+  "linear-gradient(135deg,#a1c4fd,#c2e9fb)",
+  "linear-gradient(135deg,#d4fc79,#96e6a1)",
+  "linear-gradient(135deg,#fbc2eb,#a6c1ee)",
+  "linear-gradient(135deg,#fddb92,#d1fdff)",
+  "linear-gradient(135deg,#f6d365,#fda085)",
+  "linear-gradient(135deg,#96fbc4,#f9f586)",
+];
+function randomGrad(){return GRADIENTS[Math.floor(Math.random()*GRADIENTS.length)];}
+function getEmoji(cat){return CAT_EMOJI[cat]||"🍴";}
+function escH(s){if(!s)return "";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+function getSamples(){
+  return [
+    {id:"s1",title:"Grandma's Apple Pie",author:"Eleanor",category:"Dessert",servings:"8",time:"90 min",ingredients:"6 large apples, peeled\n¾ cup sugar\n2 tbsp flour\n1 tsp cinnamon\n¼ tsp nutmeg\n2 tbsp butter\n2 pie crusts",instructions:"Preheat oven to 425°F. Mix apples with sugar, flour, spices. Fill bottom crust, dot with butter, cover with top crust. Bake 45–50 min until golden.",note:"Mix Granny Smith + Honeycrisp for the best flavor! 🍎",date:"2024-11-15",emoji:"🥧",gradient:randomGrad()},
+    {id:"s2",title:"Sunday Pasta Sauce",author:"Marco",category:"Dinner",servings:"6",time:"3 hrs",ingredients:"2 lbs ground beef\n1 large onion, diced\n4 garlic cloves\n2 cans crushed tomatoes\n1 can tomato paste\nFresh basil, olive oil",instructions:"Brown meat with onion and garlic. Add tomatoes and paste. Simmer very low for at least 3 hours, stirring now and then. Season generously.",note:"Patience is the secret ingredient here 🍅",date:"2024-12-01",emoji:"🍝",gradient:randomGrad()},
+  ];
+}
+function loadRecipes(){try{const s=localStorage.getItem("yuri_ck_v1");const d=s?JSON.parse(s):null;return d&&d.length?d:getSamples();}catch{return getSamples();}}
+function saveRecipes(r){try{localStorage.setItem("yuri_ck_v1",JSON.stringify(r));}catch{}}
+
+// Wake lock
+let wakeLock=null;
+async function requestWakeLock(){
+  try{if('wakeLock' in navigator){wakeLock=await navigator.wakeLock.request('screen');document.getElementById('wakelock-badge').style.display='block';wakeLock.addEventListener('release',()=>{document.getElementById('wakelock-badge').style.display='none';});}}catch(e){}
+}
+async function releaseWakeLock(){
+  try{if(wakeLock){await wakeLock.release();wakeLock=null;}}catch(e){}
+  document.getElementById('wakelock-badge').style.display='none';
+}
+
+const EMPTY_FORM={title:"",author:"",category:"Dinner",servings:"",time:"",ingredients:"",instructions:"",note:""};
+
+let state={
+  recipes:loadRecipes(),
+  view:"home",
+  selected:null,
+  activeCategory:null,
+  search:"",
+  addMode:"type",
+  imgPreviews:[],
+  imgLoading:false,
+  saved:false,
+  editingId:null,
+  form:{...EMPTY_FORM},
+  errors:{},
+};
+
+function setState(patch){Object.assign(state,patch);render();}
+
+function render(){
+  const app=document.getElementById("app");
+  if(state.view==="add"||state.view==="edit"){app.innerHTML=renderAdd();bindAdd();}
+  else if(state.view==="detail"&&state.selected){app.innerHTML=renderDetail();bindDetail();}
+  else{app.innerHTML=renderHome();bindHome();}
+}
+
+// ── HOME ───────────────────────────────────────────────────────────────────
+function renderHome(){
+  const {recipes,activeCategory,search}=state;
+  const displayed=recipes.filter(r=>{
+    const mc=activeCategory?r.category===activeCategory:true;
+    const ms=search?(r.title+r.author+r.category).toLowerCase().includes(search.toLowerCase()):true;
+    return mc&&ms;
+  });
+  const usedCats=CATEGORIES.filter(c=>recipes.some(r=>r.category===c));
+  return `<div>
+    <div class="header">
+      <div class="floating" style="font-size:42px;">📖</div>
+      <div class="header-title">${BOOK_NAME}</div>
+      <div class="header-sub">${recipes.length} recipe${recipes.length!==1?"s":""} in the collection</div>
+      <div class="nav">
+        <button class="nav-btn active">All Recipes</button>
+        <button class="nav-btn inactive btn-bounce" id="go-add">+ Add Recipe</button>
+      </div>
+    </div>
+    <div class="body">
+      <input class="search-bar" id="search-input" placeholder="🔍 Search recipes, names, categories…" value="${escH(state.search)}"/>
+      <div class="chips">
+        <button class="chip cat-chip btn-bounce ${!activeCategory?"active":""}" data-cat="">🍴 All (${recipes.length})</button>
+        ${usedCats.map(c=>`<button class="chip cat-chip btn-bounce ${activeCategory===c?"active":""}" data-cat="${c}">${getEmoji(c)} ${c} (${recipes.filter(r=>r.category===c).length})</button>`).join("")}
+      </div>
+      ${displayed.length===0?`<div class="empty-state">
+        <div class="floating" style="font-size:60px;margin-bottom:16px;">🔍</div>
+        <div style="font-family:'Pacifico',cursive;font-size:22px;color:#ff85b3;margin-bottom:8px;">Nothing found!</div>
+        <div style="font-size:14px;color:#c4aed8;font-weight:700;margin-bottom:24px;">Try a different search or add a new recipe!</div>
+        <button class="primary-btn btn-bounce" id="go-add2" style="width:auto;padding:12px 32px;">+ Add Recipe</button>
+      </div>`:`<div class="card-grid">
+        ${displayed.map(r=>`<div class="card recipe-card" data-id="${r.id}">
+          <div class="card-top" style="background:${r.gradient||randomGrad()}">
+            <span class="card-emoji">${r.emoji||getEmoji(r.category)}</span>
+            <div class="card-title">${escH(r.title)}</div>
+            ${r.time?`<div class="card-time">⏱ ${escH(r.time)}</div>`:""}
+          </div>
+          <div class="card-meta">
+            <div class="card-author">👤 ${escH(r.author)}</div>
+            <div class="card-cat">${getEmoji(r.category)} ${r.category}</div>
+          </div>
+        </div>`).join("")}
+      </div>`}
+      <div class="cta-banner">
+        <div style="font-size:40px;margin-bottom:12px;">🥘</div>
+        <div style="font-family:'Pacifico',cursive;font-size:22px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.15);margin-bottom:8px;">Got a recipe to share?</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.9);margin-bottom:20px;line-height:1.6;font-weight:700;">Type it in or snap a photo — we'll do the rest! ✨</div>
+        <button class="btn-bounce" id="go-add3" style="background:#fff;color:#ff6eb4;border:none;border-radius:30px;padding:12px 28px;font-size:15px;font-family:'Nunito',sans-serif;cursor:pointer;font-weight:800;box-shadow:0 4px 16px rgba(0,0,0,0.1);">+ Add My Recipe 💕</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function goAdd(){setState({view:"add",editingId:null,form:{...EMPTY_FORM},errors:{},imgPreviews:[],addMode:"type"});}
+
+function bindHome(){
+  releaseWakeLock();
+  document.getElementById("go-add")?.addEventListener("click",goAdd);
+  document.getElementById("go-add2")?.addEventListener("click",goAdd);
+  document.getElementById("go-add3")?.addEventListener("click",goAdd);
+  document.getElementById("search-input")?.addEventListener("input",e=>setState({search:e.target.value}));
+  document.querySelectorAll(".cat-chip").forEach(btn=>btn.addEventListener("click",()=>setState({activeCategory:btn.dataset.cat||null})));
+  document.querySelectorAll(".recipe-card").forEach(card=>card.addEventListener("click",()=>{
+    const rec=state.recipes.find(r=>r.id===card.dataset.id);
+    if(rec){requestWakeLock();setState({view:"detail",selected:rec});}
+  }));
+}
+
+// ── DETAIL ─────────────────────────────────────────────────────────────────
+function renderDetail(){
+  const r=state.selected;
+  const grad=r.gradient||randomGrad();
+  return `<div>
+    <div class="header" style="background:${grad};border-radius:0 0 40px 40px;">
+      <button class="back-btn" id="back-btn" style="position:absolute;top:20px;left:16px;color:rgba(0,0,0,0.5);">← Back</button>
+      <button id="edit-btn" style="position:absolute;top:20px;right:16px;background:rgba(255,255,255,0.35);border:none;border-radius:20px;padding:6px 16px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:rgba(0,0,0,0.6);">✏️ Edit</button>
+      <div style="font-size:60px;position:relative;">${r.emoji||"🍴"}</div>
+      <div style="font-family:'Pacifico',cursive;font-size:26px;color:rgba(0,0,0,0.7);margin-bottom:6px;">${escH(r.title)}</div>
+      <div style="color:rgba(0,0,0,0.5);font-size:14px;font-weight:700;">By ${escH(r.author)} · ${r.category}</div>
+    </div>
+    <div class="body">
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+        ${r.servings?`<div class="badge" style="background:#fff0f6;border-color:#ffd6ec;color:#ff85b3;">👥 ${escH(r.servings)} servings</div>`:""}
+        ${r.time?`<div class="badge" style="background:#f0f4ff;border-color:#c7d3ff;color:#6b8cff;">⏱ ${escH(r.time)}</div>`:""}
+        <div class="badge" style="background:#f0fff4;border-color:#a8f0c6;color:#34c77b;">📅 ${r.date}</div>
+      </div>
+      <div class="detail-section" style="border:2px solid #ffd6ec;">
+        <div style="font-family:'Pacifico',cursive;font-size:18px;color:#ff85b3;margin-bottom:12px;">🛒 Ingredients</div>
+        ${r.ingredients.split("\n").filter(Boolean).map(ing=>`<div class="ing-row"><span style="color:#ff85b3;font-weight:900;">✦</span><span>${escH(ing)}</span></div>`).join("")}
+      </div>
+      <div class="detail-section" style="border:2px solid #d4eeff;">
+        <div style="font-family:'Pacifico',cursive;font-size:18px;color:#4fc3f7;margin-bottom:12px;">👩‍🍳 Instructions</div>
+        <p style="line-height:1.8;font-size:15px;white-space:pre-wrap;font-weight:600;">${escH(r.instructions)}</p>
+      </div>
+      ${r.note?`<div class="note-box">
+        <div style="font-family:'Pacifico',cursive;font-size:18px;color:#f59e0b;margin-bottom:8px;">💛 Tasty Tip</div>
+        <p style="line-height:1.7;font-size:15px;color:#5c4a1e;font-style:italic;font-weight:700;">${escH(r.note)}</p>
+      </div>`:""}
+      <button id="delete-btn" style="background:#fff0f6;border:2px solid #ffd6ec;border-radius:30px;padding:10px 20px;color:#ff85b3;font-size:14px;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;">🗑 Remove recipe</button>
+    </div>
+  </div>`;
+}
+
+function bindDetail(){
+  requestWakeLock();
+  document.getElementById("back-btn")?.addEventListener("click",()=>{releaseWakeLock();setState({view:"home",selected:null});});
+  document.getElementById("edit-btn")?.addEventListener("click",()=>{
+    const r=state.selected;
+    setState({view:"edit",editingId:r.id,imgPreviews:[],addMode:"type",errors:{},
+      form:{title:r.title,author:r.author,category:r.category,servings:r.servings||"",time:r.time||"",ingredients:r.ingredients,instructions:r.instructions,note:r.note||""}});
+  });
+  document.getElementById("delete-btn")?.addEventListener("click",()=>{
+    if(confirm("Remove this recipe from the cookbook? 🥺")){
+      const updated=state.recipes.filter(r=>r.id!==state.selected.id);
+      saveRecipes(updated);
+      setState({recipes:updated,view:"home",selected:null});
+    }
+  });
+}
+
+// ── ADD / EDIT ─────────────────────────────────────────────────────────────
+function renderAdd(){
+  const f=state.form; const e=state.errors; const isEdit=state.view==="edit";
+  return `<div>
+    <div class="header">
+      <div class="floating" style="font-size:40px;">✨</div>
+      <div class="header-title">${isEdit?"Edit Recipe":"Add a Recipe!"}</div>
+      <div class="header-sub">${isEdit?"Make it just right 💕":"Share something delicious 💕"}</div>
+      <div class="nav"><button class="nav-btn inactive btn-bounce" id="back-btn">← Back to Cookbook</button></div>
+    </div>
+    <div class="body" style="max-width:600px;">
+      <div class="form-box">
+        ${state.saved?`<div class="success-banner pop-in">🎉 ${isEdit?"Recipe updated!":"Recipe saved to the cookbook!"}</div>`:""}
+        ${!isEdit?`<div class="grid-2" style="margin-bottom:20px;">
+          <button class="mode-btn ${state.addMode==="type"?"active":"inactive"}" id="mode-type">✏️ Type it in</button>
+          <button class="mode-btn ${state.addMode==="image"?"active":"inactive"}" id="mode-image">📸 Scan from photo</button>
+        </div>`:""}
+        ${state.addMode==="image"&&!isEdit?`<div style="margin-bottom:20px;">
+          <div class="img-drop">
+            ${state.imgLoading
+              ?`<div style="font-size:40px;animation:spin 1s linear infinite;display:inline-block;">🔄</div><div style="margin-top:10px;font-weight:800;color:#9b7eb8;">Reading your recipe… ✨</div>`
+              :state.imgPreviews.length
+                ?`<div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:8px;">${state.imgPreviews.map(p=>`<img src="${p}" style="height:80px;border-radius:10px;object-fit:cover;"/>`).join("")}</div><div style="font-weight:800;color:#34c77b;font-size:14px;">✅ ${state.imgPreviews.length} photo${state.imgPreviews.length>1?"s":""} scanned! Review & edit below.</div>`
+                :`<div style="font-size:48px;margin-bottom:8px;">📷</div><div style="font-weight:800;color:#9b7eb8;font-size:15px;margin-bottom:4px;">Upload up to 3 photos of your recipe</div><div style="font-size:13px;color:#c4aed8;">Great for multi-page recipes!</div>`}
+          </div>
+          ${!state.imgLoading?`<button class="primary-btn btn-bounce" id="pick-photos" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb);margin-bottom:12px;">📸 Choose Photo(s)</button>`:""}
+          <input type="file" id="file-input" accept="image/*" multiple style="display:none;"/>
+        </div>`:""}
+        <div style="display:grid;gap:14px;">
+          <div>
+            <label class="form-label">Recipe Name ✨</label>
+            <input class="form-input ${e.title?"error":""}" id="f-title" value="${escH(f.title)}" placeholder="e.g. Mom's Famous Cookies"/>
+            ${e.title?`<div class="err-msg">${e.title}</div>`:""}
+          </div>
+          <div>
+            <label class="form-label">Your Name 👋</label>
+            <input class="form-input ${e.author?"error":""}" id="f-author" value="${escH(f.author)}" placeholder="e.g. Auntie Jo"/>
+            ${e.author?`<div class="err-msg">${e.author}</div>`:""}
+          </div>
+          <div class="grid-3">
+            <div>
+              <label class="form-label">Category</label>
+              <select class="form-input" id="f-category">${CATEGORIES.map(c=>`<option ${f.category===c?"selected":""}>${c}</option>`).join("")}</select>
+            </div>
+            <div>
+              <label class="form-label">Servings 👥</label>
+              <input class="form-input" id="f-servings" value="${escH(f.servings)}" placeholder="4"/>
+            </div>
+            <div>
+              <label class="form-label">Time ⏱</label>
+              <input class="form-input" id="f-time" value="${escH(f.time)}" placeholder="30 min"/>
+            </div>
+          </div>
+          <div>
+            <label class="form-label">Ingredients 🛒 (one per line)</label>
+            <textarea class="form-textarea ${e.ingredients?"error":""}" id="f-ingredients" placeholder="2 cups flour&#10;1 tsp salt&#10;3 eggs...">${escH(f.ingredients)}</textarea>
+            ${e.ingredients?`<div class="err-msg">${e.ingredients}</div>`:""}
+          </div>
+          <div>
+            <label class="form-label">Instructions 👩‍🍳</label>
+            <textarea class="form-textarea ${e.instructions?"error":""}" id="f-instructions" style="min-height:120px;" placeholder="Step by step...">${escH(f.instructions)}</textarea>
+            ${e.instructions?`<div class="err-msg">${e.instructions}</div>`:""}
+          </div>
+          <div>
+            <label class="form-label">Tips & Notes 💛 (optional)</label>
+            <textarea class="form-textarea" id="f-note" placeholder="Secret tips, memories, substitutions...">${escH(f.note)}</textarea>
+          </div>
+          <button class="primary-btn btn-bounce" id="submit-btn">🎉 ${isEdit?"Save Changes!":"Add to "+BOOK_NAME+"!"}</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function bindAdd(){
+  const isEdit=state.view==="edit";
+  document.getElementById("back-btn")?.addEventListener("click",()=>{
+    if(isEdit) setState({view:"detail"});
+    else setState({view:"home"});
+  });
+  document.getElementById("mode-type")?.addEventListener("click",()=>setState({addMode:"type"}));
+  document.getElementById("mode-image")?.addEventListener("click",()=>setState({addMode:"image"}));
+  document.getElementById("pick-photos")?.addEventListener("click",()=>document.getElementById("file-input")?.click());
+  document.getElementById("file-input")?.addEventListener("change",handleImages);
+  ["title","author","category","servings","time","ingredients","instructions","note"].forEach(field=>{
+    const el=document.getElementById("f-"+field);
+    if(el) el.addEventListener("input",e=>{state.form[field]=e.target.value;});
+  });
+  document.getElementById("submit-btn")?.addEventListener("click",submitRecipe);
+}
+
+async function handleImages(e){
+  const files=Array.from(e.target.files).slice(0,3);
+  if(!files.length) return;
+  setState({imgPreviews:files.map(f=>URL.createObjectURL(f)),imgLoading:true});
+  try{
+    const imageParts=await Promise.all(files.map(async f=>{
+      const b64=await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result.split(",")[1]);r.onerror=rej;r.readAsDataURL(f);});
+      return {type:"image",source:{type:"base64",media_type:f.type||"image/jpeg",data:b64}};
+    }));
+    const content=[...imageParts,{type:"text",text:`Extract the complete recipe from these image(s). There may be 1-3 images showing different pages — combine them all. Return ONLY a JSON object (no markdown, no backticks):\n{"title":"","category":"one of: Breakfast,Lunch,Dinner,Dessert,Snacks,Drinks,Soups,Baking,Holiday","servings":"","time":"","ingredients":"one per line","instructions":"full instructions","note":""}\nUse empty string if not found.`}];
+    const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content}]})});
+    const data=await resp.json();
+    const text=(data.content||[]).map(b=>b.text||"").join("");
+    const parsed=JSON.parse(text.replace(/```json|```/g,"").trim());
+    state.form={...state.form,title:parsed.title||"",category:CATEGORIES.includes(parsed.category)?parsed.category:"Dinner",servings:parsed.servings||"",time:parsed.time||"",ingredients:parsed.ingredients||"",instructions:parsed.instructions||"",note:parsed.note||""};
+    setState({imgLoading:false,addMode:"type"});
+  }catch(err){
+    alert("Couldn't read that image 😅 Try a clearer photo or type it in!");
+    setState({imgLoading:false});
+  }
+}
+
+function submitRecipe(){
+  const f=state.form; const e={};
+  if(!f.title.trim()) e.title="What's the recipe called? 🤔";
+  if(!f.author.trim()) e.author="Tell us your name! 😊";
+  if(!f.ingredients.trim()) e.ingredients="Don't forget the ingredients! 🛒";
+  if(!f.instructions.trim()) e.instructions="How do we make it? 👩‍🍳";
+  if(Object.keys(e).length){setState({errors:e});return;}
+  const isEdit=state.view==="edit";
+  if(isEdit){
+    const updated=state.recipes.map(r=>r.id===state.editingId?{...r,...f,emoji:getEmoji(f.category)}:r);
+    saveRecipes(updated);
+    const newSel=updated.find(r=>r.id===state.editingId);
+    setState({recipes:updated,saved:true,selected:newSel});
+    setTimeout(()=>setState({saved:false,view:"detail"}),1800);
+  } else {
+    const nr={...f,id:`r-${Date.now()}`,date:new Date().toISOString().split("T")[0],emoji:getEmoji(f.category),gradient:randomGrad()};
+    const updated=[nr,...state.recipes];
+    saveRecipes(updated);
+    setState({recipes:updated,saved:true,errors:{}});
+    setTimeout(()=>setState({saved:false,view:"home",form:{...EMPTY_FORM},imgPreviews:[],addMode:"type"}),2000);
+  }
+}
+
+render();
+</script>
+</body>
+</html>
